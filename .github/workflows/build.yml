@@ -14,10 +14,9 @@ jobs:
     - name: Fetch from AUR
       run: |
         git clone https://aur.archlinux.org/vala-panel-appmenu-xfce-git.git
-        cp vala-panel-appmenu-xfce-git/PKGBUILD ./
-        cp vala-panel-appmenu-xfce-git/.SRCINFO ./
     - name: Makepkg Build and Check
       id: makepkg
+      pkgdir: vala-panel-appmenu-xfce-git
       uses: edlanglois/pkgbuild-action@v1
     - name: Print Package Files
       run: |
