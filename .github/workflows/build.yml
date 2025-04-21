@@ -2,8 +2,10 @@ name: Build vala-panel-appmenu packages
 
 on:
   push:
-  # schedule:
-  #   - cron: '0 7 21 * *'
+    paths:
+      - '**.js'
+  schedule:
+    - cron: '0 0 1 * *'
 
 jobs:
   build:
