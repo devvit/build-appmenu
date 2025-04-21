@@ -18,6 +18,7 @@ jobs:
 
     - name: Set up build environment
       run: |
+        pacman -Syu --noconfirm
         pacman -Sy --noconfirm --needed base-devel git meson vala
         pacman -Sy --noconfirm --needed mate-panel xfce4-panel budgie-desktop gobject-introspection
         useradd -m builder
