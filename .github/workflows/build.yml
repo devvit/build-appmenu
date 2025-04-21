@@ -39,6 +39,24 @@ jobs:
         cd vala-panel-git
         sudo -u builder makepkg --syncdeps --noconfirm
         rm -rf *debug*
+        sudo pacman -U --noconfirm vala-panel*.zst
+
+    - name: Build packages
+      run: |
+        cd /github
+        sudo -u builder git clone https://aur.archlinux.org/appmenu-gtk-module-git.git
+        cd appmenu-gtk-module-git
+        sudo -u builder makepkg --syncdeps --noconfirm
+        rm -rf *debug*
+
+    # - name: Build packages
+    #   run: |
+    #     cd /github
+    #     sudo -u builder git clone https://aur.archlinux.org/vala-panel-appmenu-xfce-git.git
+    #     cd vala-panel-appmenu-xfce-git
+    #     sudo -u builder makepkg --syncdeps --noconfirm
+    #     rm -rf *debug*
+    #     sudo pacman -U --noconfirm vala-panel*.zst
 
     - name: Upload artifacts
       run: |
