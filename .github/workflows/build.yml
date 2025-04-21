@@ -1,4 +1,4 @@
-name: PKGBUILD CI
+name: Build vala-panel-appmenu packages
 
 on:
   push:
@@ -6,25 +6,41 @@ on:
   #   - cron: '0 7 21 * *'
 
 jobs:
-  pkgbuild:
+  build:
     runs-on: ubuntu-latest
+    container:
+      image: archlinux:latest
     steps:
-    - name: Checkout
+    - name: Checkout repository
       uses: actions/checkout@v4
-    - name: Fetch from AUR
+
+    - name: Set up build environment
       run: |
-        git clone https://aur.archlinux.org/vala-panel-appmenu-xfce-git.git
-    - name: Makepkg Build and Check
-      id: makepkg
-      uses: edlanglois/pkgbuild-action@v1
-      with:
-        pkgdir: 'vala-panel-appmenu-xfce-git'
-        aurDeps: true
-    - name: Print Package Files
+        pacman -Sy --noconfirm --needed base-devel git meson vala gtk3 libwnck3 appmenu-glib-translator
+        pacman -Sy --noconfirm --needed mate-panel xfce4-panel xfconf vala-panel budgie-desktop gobject-introspection
+        useradd -m builder
+        echo "builder ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
+        mkdir /github
+        chown builder:builder /github
+
+    - name: Build packages
       run: |
-        echo "Successfully created the following package archive"
-        echo "Package: ${{ steps.makepkg.outputs.pkgfile0 }}"
-    - name: Upload Package Archive
+        cd /github
+        sudo -u builder git clone https://aur.archlinux.org/vala-panel-appmenu-xfce-git.git
+        cd vala-panel-appmenu-xfce-git
+        sudo -u builder makepkg --syncdeps --noconfirm
+
+    - name: Upload artifacts
+      run: |
+        cd /github/vala-panel-appmenu-xfce-git
+        mkdir -p artifacts
+        cp *.pkg.tar.zst artifacts/
+        ls -la artifacts/
+      shell: bash
+
+    - name: Upload packages as artifacts
       uses: actions/upload-artifact@v4
       with:
-        path: ${{ steps.makepkg.outputs.pkgfile0 }}
+        name: vala-panel-appmenu-packages
+        path: /github/vala-panel-appmenu-xfce-git/artifacts/*.pkg.tar.zst
+        if-no-files-found: error
