@@ -16,8 +16,9 @@ jobs:
         git clone https://aur.archlinux.org/vala-panel-appmenu-xfce-git.git
     - name: Makepkg Build and Check
       id: makepkg
-      pkgdir: vala-panel-appmenu-xfce-git
       uses: edlanglois/pkgbuild-action@v1
+      with:
+        pkgdir: 'vala-panel-appmenu-xfce-git'
     - name: Print Package Files
       run: |
         echo "Successfully created the following package archive"
