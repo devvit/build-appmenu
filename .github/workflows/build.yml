@@ -29,13 +29,16 @@ jobs:
         sudo -u builder git clone https://aur.archlinux.org/vala-panel.git
         cd vala-panel
         sudo -u builder makepkg --syncdeps --noconfirm
+        rm -rf *debug*
+        sudo pacman -U --noconfirm vala-panel*.zst
 
-    # - name: Build packages
-    #   run: |
-    #     cd /github
-    #     sudo -u builder git clone https://aur.archlinux.org/vala-panel-appmenu.git
-    #     cd vala-panel-appmenu
-    #     sudo -u builder makepkg --syncdeps --noconfirm
+    - name: Build packages
+      run: |
+        cd /github
+        sudo -u builder git clone https://aur.archlinux.org/vala-panel-appmenu.git
+        cd vala-panel-appmenu
+        sudo -u builder makepkg --syncdeps --noconfirm
+        rm -rf *debug*
 
     # - name: Build packages
     #   run: |
@@ -46,7 +49,7 @@ jobs:
 
     - name: Upload artifacts
       run: |
-        cp /github/vala-panel/*.pkg.tar.zst /github/artifacts/
+        cp /github/*/*.zst /github/artifacts/
         ls -la /github/artifacts/
       shell: bash
 
@@ -54,5 +57,5 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: vala-panel-appmenu-packages
-        path: /github/artifacts/*.pkg.tar.zst
+        path: /github/artifacts/*.zst
         if-no-files-found: error
