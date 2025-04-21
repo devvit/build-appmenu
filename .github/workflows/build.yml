@@ -16,7 +16,7 @@ jobs:
 
     - name: Set up build environment
       run: |
-        pacman -Sy --noconfirm --needed base-devel git meson vala gtk3 libwnck3
+        pacman -Sy --noconfirm --needed base-devel git meson vala
         pacman -Sy --noconfirm --needed mate-panel xfce4-panel budgie-desktop gobject-introspection
         useradd -m builder
         echo "builder ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
@@ -26,9 +26,16 @@ jobs:
     - name: Build packages
       run: |
         cd /github
-        sudo -u builder git clone https://aur.archlinux.org/vala-panel-appmenu.git
-        cd vala-panel-appmenu
+        sudo -u builder git clone https://aur.archlinux.org/vala-panel.git
+        cd vala-panel
         sudo -u builder makepkg --syncdeps --noconfirm
+
+    # - name: Build packages
+    #   run: |
+    #     cd /github
+    #     sudo -u builder git clone https://aur.archlinux.org/vala-panel-appmenu.git
+    #     cd vala-panel-appmenu
+    #     sudo -u builder makepkg --syncdeps --noconfirm
 
     # - name: Build packages
     #   run: |
@@ -39,7 +46,7 @@ jobs:
 
     - name: Upload artifacts
       run: |
-        cp /github/vala-panel-appmenu/*.pkg.tar.zst /github/artifacts/
+        cp /github/vala-panel/*.pkg.tar.zst /github/artifacts/
         ls -la /github/artifacts/
       shell: bash
 
