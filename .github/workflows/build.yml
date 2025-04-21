@@ -26,9 +26,16 @@ jobs:
     - name: Build packages
       run: |
         cd /github
-        sudo -u builder git clone https://aur.archlinux.org/vala-panel-git.git
-        cd vala-panel-git
+        sudo -u builder git clone https://aur.archlinux.org/appmenu-glib-translator-git.git
+        cd appmenu-glib-translator-git
         sudo -u builder makepkg --syncdeps --noconfirm
+
+    # - name: Build packages
+    #   run: |
+    #     cd /github
+    #     sudo -u builder git clone https://aur.archlinux.org/vala-panel-git.git
+    #     cd vala-panel-git
+    #     sudo -u builder makepkg --syncdeps --noconfirm
 
     # - name: Build packages
     #   run: |
