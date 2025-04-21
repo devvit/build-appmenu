@@ -17,7 +17,7 @@ jobs:
     - name: Set up build environment
       run: |
         pacman -Sy --noconfirm --needed base-devel git meson vala gtk3 libwnck3
-        pacman -Sy --noconfirm --needed mate-panel xfce4-panel xfconf vala-panel budgie-desktop gobject-introspection
+        pacman -Sy --noconfirm --needed mate-panel xfce4-panel budgie-desktop gobject-introspection
         useradd -m builder
         echo "builder ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
         mkdir -p /github/artifacts
@@ -39,7 +39,7 @@ jobs:
 
     - name: Upload artifacts
       run: |
-        cp /github/vala-panel-appmenu-xfce-git/*.pkg.tar.zst /github/artifacts/
+        cp /github/vala-panel-appmenu/*.pkg.tar.zst /github/artifacts/
         ls -la /github/artifacts/
       shell: bash
 
