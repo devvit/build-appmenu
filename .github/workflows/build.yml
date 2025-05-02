@@ -2,8 +2,8 @@ name: Build vala-panel-appmenu packages
 
 on:
   push:
-    paths:
-      - '**.js'
+    # paths:
+    #   - '**.js'
   schedule:
     - cron: '0 0 11 * *'
 
@@ -20,7 +20,7 @@ jobs:
       run: |
         pacman -Syu --noconfirm
         pacman -Sy --noconfirm --needed base-devel git meson vala
-        pacman -Sy --noconfirm --needed mate-panel xfce4-panel budgie-desktop gobject-introspection
+        pacman -Sy --noconfirm --needed mate-panel xfce4-panel lxpanel budgie-desktop gobject-introspection
         useradd -m builder
         echo "builder ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
         mkdir -p /github/artifacts
@@ -67,6 +67,14 @@ jobs:
         cd /github
         sudo -u builder git clone https://aur.archlinux.org/vala-panel-appmenu-xfce-git.git
         cd vala-panel-appmenu-xfce-git
+        sudo -u builder makepkg --syncdeps --noconfirm
+        rm -rf *debug*
+
+    - name: Build packages
+      run: |
+        cd /github
+        sudo -u builder git clone https://aur.archlinux.org/topmenu-gtk.git
+        cd topmenu-gtk
         sudo -u builder makepkg --syncdeps --noconfirm
         rm -rf *debug*
 
