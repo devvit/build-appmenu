@@ -2,10 +2,10 @@ name: Build vala-panel-appmenu packages
 
 on:
   push:
-    # paths:
-    #   - '**.js'
+    paths:
+      - '**.js'
   schedule:
-    - cron: '0 0 11 * *'
+    - cron: '0 0 1 * *'
 
 jobs:
   build:
@@ -67,14 +67,6 @@ jobs:
         cd /github
         sudo -u builder git clone https://aur.archlinux.org/vala-panel-appmenu-xfce-git.git
         cd vala-panel-appmenu-xfce-git
-        sudo -u builder makepkg --syncdeps --noconfirm
-        rm -rf *debug*
-
-    - name: Build packages
-      run: |
-        cd /github
-        sudo -u builder git clone https://aur.archlinux.org/topmenu-gtk.git
-        cd topmenu-gtk
         sudo -u builder makepkg --syncdeps --noconfirm
         rm -rf *debug*
 
