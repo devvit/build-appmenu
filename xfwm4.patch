@@ -1,0 +1,131 @@
+diff --git a/src/client.c b/src/client.c
+index caabbf6..679c0cb 100644
+--- a/src/client.c
++++ b/src/client.c
+@@ -2701,6 +2701,26 @@ clientClose (Client *c)
+     g_return_if_fail (c != NULL);
+     TRACE ("client \"%s\" (0x%lx)", c->name, c->window);
+ 
++    if (c->type == WINDOW_NORMAL) {
++	    /* --- 新增：使用 Exec Path 保存 --- */
++	    gchar *path = getClientPidPath (c);
++	    gchar *filename = getSafeFileNameFromPath (path ? path : c->class.res_name);
++
++	    gchar *config_dir = g_build_filename (g_get_home_dir (), ".xwin", NULL);
++	    g_mkdir_with_parents (config_dir, 0755);
++
++	    gchar *full_path = g_build_filename (config_dir, filename, NULL);
++	    gchar *content = g_strdup_printf ("%d,%d", c->x, c->y);
++
++	    g_file_set_contents (full_path, content, -1, NULL);
++
++	    g_free (path);
++	    g_free (filename);
++	    g_free (full_path);
++	    g_free (content);
++	    g_free (config_dir);
++    }
++
+     screen_info = c->screen_info;
+     display_info = screen_info->display_info;
+     timestamp = myDisplayGetCurrentTime (display_info);
+diff --git a/src/client.h b/src/client.h
+index 391d581..96281cd 100644
+--- a/src/client.h
++++ b/src/client.h
+@@ -501,6 +501,37 @@ gboolean                 clientGetGtkFrameExtents               (Client *);
+ gboolean                 clientGetGtkHideTitlebar               (Client *);
+ #ifdef HAVE_LIBSTARTUP_NOTIFICATION
+ char                    *clientGetStartupId                     (Client *);
++
++static gchar *
++getClientPidPath (Client *c)
++{
++    gchar *exepath = NULL;
++    gchar *procpath;
++
++    if (c->pid > 0)
++    {
++        procpath = g_strdup_printf ("/proc/%d/exe", c->pid);
++        // readlink 会返回软链接指向的真实绝对路径
++        exepath = g_file_read_link (procpath, NULL);
++        g_free (procpath);
++    }
++    return exepath; // 如果失败返回 NULL
++}
++
++static gchar *
++getSafeFileNameFromPath (const gchar *path)
++{
++    if (!path) return g_strdup ("unknown.txt");
++
++    // 将路径中的 '/' 替换为 '_'
++    // 例如 /usr/bin/firefox -> _usr_bin_firefox.txt
++    gchar *safe_name = g_strdup (path);
++    g_strdelimit (safe_name, "/", '_');
++
++    gchar *filename = g_strdup_printf ("%s.txt", safe_name);
++    g_free (safe_name);
++    return filename;
++}
+ #endif /* HAVE_LIBSTARTUP_NOTIFICATION */
+ 
+ #endif /* INC_CLIENT_H */
+diff --git a/src/placement.c b/src/placement.c
+index b763472..c066b0f 100644
+--- a/src/placement.c
++++ b/src/placement.c
+@@ -841,6 +841,36 @@ mousePlacement (Client * c, int full_x, int full_y, int full_w, int full_h, int
+     c->y = MAX (c->y, full_y + frameExtentTop(c));
+ }
+ 
++static void
++autoPlacement (Client * c,int full_x, int full_y, int full_w, int full_h)
++{
++    gchar *path = getClientPidPath (c);
++    gchar *filename = getSafeFileNameFromPath (path ? path : c->class.res_name);
++    gchar *config_dir = g_build_filename (g_get_home_dir (), ".xwin", NULL);
++    gchar *full_path = g_build_filename (config_dir, filename, NULL);
++    gchar *content = NULL;
++    int x = 0, y = 0;
++
++    if (g_file_get_contents (full_path, &content, NULL, NULL))
++    {
++        if (sscanf (content, "%d,%d", &x, &y) == 2)
++        {
++            c->x = x;
++            c->y = y;
++        }
++        g_free (content);
++    }
++    else
++    {
++	    centerPlacement(c, full_x,full_y,full_w,full_h);
++    }
++
++    g_free (path);
++    g_free (filename);
++    g_free (full_path);
++    g_free (config_dir);
++}
++
+ void
+ clientInitPosition (Client * c)
+ {
+@@ -906,6 +936,8 @@ clientInitPosition (Client * c)
+      */
+     if (place)
+     {
++	    autoPlacement(c,full.x, full.y, full.width, full.height);
++	    /*
+         if ((screen_info->params->placement_ratio >= 100) ||
+             (100 * frameExtentWidth(c) * frameExtentHeight(c)) <
+                 (screen_info->params->placement_ratio * full.width * full.height))
+@@ -927,6 +959,7 @@ clientInitPosition (Client * c)
+         {
+             smartPlacement (c, full.x, full.y, full.width, full.height);
+         }
++	*/
+     }
+ 
+     if (c->type & WINDOW_REGULAR_FOCUSABLE)
