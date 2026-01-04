@@ -72,7 +72,7 @@ index 391d581..96281cd 100644
  
  #endif /* INC_CLIENT_H */
 diff --git a/src/placement.c b/src/placement.c
-index b763472..c066b0f 100644
+index b763472..1868dac 100644
 --- a/src/placement.c
 +++ b/src/placement.c
 @@ -841,6 +841,36 @@ mousePlacement (Client * c, int full_x, int full_y, int full_w, int full_h, int
@@ -112,20 +112,56 @@ index b763472..c066b0f 100644
  void
  clientInitPosition (Client * c)
  {
-@@ -906,6 +936,8 @@ clientInitPosition (Client * c)
+@@ -906,27 +936,31 @@ clientInitPosition (Client * c)
       */
      if (place)
      {
-+	    autoPlacement(c,full.x, full.y, full.width, full.height);
-+	    /*
-         if ((screen_info->params->placement_ratio >= 100) ||
-             (100 * frameExtentWidth(c) * frameExtentHeight(c)) <
-                 (screen_info->params->placement_ratio * full.width * full.height))
-@@ -927,6 +959,7 @@ clientInitPosition (Client * c)
-         {
-             smartPlacement (c, full.x, full.y, full.width, full.height);
-         }
-+	*/
+-        if ((screen_info->params->placement_ratio >= 100) ||
+-            (100 * frameExtentWidth(c) * frameExtentHeight(c)) <
+-                (screen_info->params->placement_ratio * full.width * full.height))
+-        {
+-            if (screen_info->params->placement_mode == PLACE_MOUSE)
+-            {
+-                mousePlacement (c, full.x, full.y, full.width, full.height, msx, msy);
+-            }
+-            else
+-            {
+-                centerPlacement (c, full.x, full.y, full.width, full.height);
+-            }
+-        }
+-        else if ((frameExtentWidth(c) >= full.width) && (frameExtentHeight(c) >= full.height))
+-        {
+-            centerPlacement (c, full.x, full.y, full.width, full.height);
+-        }
+-        else
+-        {
+-            smartPlacement (c, full.x, full.y, full.width, full.height);
+-        }
++	    if (c->type == WINDOW_NORMAL) {
++		    autoPlacement(c,full.x, full.y, full.width, full.height);
++	    } else {
++		if ((screen_info->params->placement_ratio >= 100) ||
++		    (100 * frameExtentWidth(c) * frameExtentHeight(c)) <
++			(screen_info->params->placement_ratio * full.width * full.height))
++		{
++		    if (screen_info->params->placement_mode == PLACE_MOUSE)
++		    {
++			mousePlacement (c, full.x, full.y, full.width, full.height, msx, msy);
++		    }
++		    else
++		    {
++			centerPlacement (c, full.x, full.y, full.width, full.height);
++		    }
++		}
++		else if ((frameExtentWidth(c) >= full.width) && (frameExtentHeight(c) >= full.height))
++		{
++		    centerPlacement (c, full.x, full.y, full.width, full.height);
++		}
++		else
++		{
++		    smartPlacement (c, full.x, full.y, full.width, full.height);
++		}
++	    }
      }
  
      if (c->type & WINDOW_REGULAR_FOCUSABLE)
