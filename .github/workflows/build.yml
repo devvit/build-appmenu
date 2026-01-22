@@ -84,3 +84,4 @@ jobs:
         name: vala-panel-appmenu-packages
         path: /github/artifacts/*.zst
         if-no-files-found: error
+        retention-days: 3
