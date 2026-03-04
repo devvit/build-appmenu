@@ -49,7 +49,7 @@ jobs:
         cd /github
         sudo -u builder git clone https://aur.archlinux.org/appmenu-gtk-module-git.git
         cd appmenu-gtk-module-git
-        perl -pi -e 's/gtk2/gtk2-compat/g' PKGBUILD
+        perl -pi -e "s/'gtk2'/'gtk2-compat'/g" PKGBUILD
         sudo -u builder makepkg --syncdeps --noconfirm
         rm -rf *debug*
         sudo pacman -U --noconfirm appmenu-gtk-module*.zst
