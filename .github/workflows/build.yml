@@ -19,7 +19,7 @@ jobs:
     - name: Set up build environment
       run: |
         pacman -Syu --noconfirm
-        pacman -Sy --noconfirm --needed base-devel git meson vala
+        pacman -Sy --noconfirm --needed base-devel git meson vala xfce4-dev-tools
         pacman -Sy --noconfirm --needed mate-panel xfce4-panel lxpanel budgie-desktop gobject-introspection
         useradd -m builder
         echo "builder ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
@@ -80,7 +80,7 @@ jobs:
 
     - name: Pack artifacts into zip
       run: |
-        zip -j /github/artifacts/packages.zip /github/*/*.zst -x "*debug*"
+        tar -czf /github/artifacts/packages.tar.gz --transform='s|.*/||' --exclude='*debug*' /github/*/*.zst
         ls -la /github/artifacts/
       shell: bash
 
@@ -88,6 +88,6 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: vala-panel-appmenu-packages
-        path: /github/artifacts/packages.zip
+        path: /github/artifacts/packages.tar.gz
         if-no-files-found: error
         retention-days: 30
