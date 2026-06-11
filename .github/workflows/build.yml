@@ -20,7 +20,7 @@ jobs:
       run: |
         pacman -Syu --noconfirm
         pacman -Sy --noconfirm --needed base-devel git meson vala xfce4-dev-tools libappindicator-gtk3 cmake
-        pacman -Sy --noconfirm --needed glib2-devel mate-panel xfce4-panel lxpanel budgie-desktop gobject-introspection
+        pacman -Sy --noconfirm --needed gtk2-compat glib2-devel mate-panel xfce4-panel lxpanel budgie-desktop gobject-introspection
         useradd -m builder
         echo "builder ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
         mkdir -p /github/artifacts
