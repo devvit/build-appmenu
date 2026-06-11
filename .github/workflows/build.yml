@@ -29,6 +29,15 @@ jobs:
     - name: Build packages
       run: |
         cd /github
+        sudo -u builder git clone https://aur.archlinux.org/appmenu-gtk-module-git.git
+        cd appmenu-gtk-module-git
+        perl -pi -e "s/'gtk2'/'gtk2-compat'/g" PKGBUILD
+        sudo -u builder makepkg --syncdeps --noconfirm
+        sudo pacman -U --noconfirm appmenu-gtk-module*.zst
+
+    - name: Build packages
+      run: |
+        cd /github
         sudo -u builder git clone https://aur.archlinux.org/appmenu-glib-translator-git.git
         cd appmenu-glib-translator-git
         sudo -u builder makepkg --syncdeps --noconfirm
@@ -41,15 +50,6 @@ jobs:
         cd vala-panel-git
         sudo -u builder makepkg --syncdeps --noconfirm
         sudo pacman -U --noconfirm vala-panel*.zst
-
-    - name: Build packages
-      run: |
-        cd /github
-        sudo -u builder git clone https://aur.archlinux.org/appmenu-gtk-module-git.git
-        cd appmenu-gtk-module-git
-        perl -pi -e "s/'gtk2'/'gtk2-compat'/g" PKGBUILD
-        sudo -u builder makepkg --syncdeps --noconfirm
-        sudo pacman -U --noconfirm appmenu-gtk-module*.zst
 
     - name: Build packages
       run: |
