@@ -90,6 +90,13 @@ jobs:
         cd keymapper-git
         sudo -u builder makepkg --syncdeps --noconfirm
 
+    - name: Build packages
+      run: |
+        cd /github
+        sudo -u builder git clone https://aur.archlinux.org/input-remapper-git.git
+        cd input-remapper-git
+        sudo -u builder makepkg --syncdeps --noconfirm
+
     - name: Pack artifacts into zip
       run: |
         tar -czf /github/artifacts/packages.tar.gz --transform='s|.*/||' /github/*/*.zst
