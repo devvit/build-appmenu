@@ -97,20 +97,6 @@ jobs:
         cd input-remapper-git
         sudo -u builder makepkg --syncdeps --noconfirm
 
-    - name: Build packages
-      run: |
-        cd /github
-        sudo -u builder git clone https://aur.archlinux.org/novabar.git
-        cd novabar
-        sudo -u builder makepkg --syncdeps --noconfirm
-
-    - name: Build packages
-      run: |
-        cd /github
-        sudo -u builder git clone https://aur.archlinux.org/novadock.git
-        cd novadock
-        sudo -u builder makepkg --syncdeps --noconfirm
-
     - name: Pack artifacts into zip
       run: |
         tar -czf /github/artifacts/packages.tar.gz --transform='s|.*/||' /github/*/*.zst
