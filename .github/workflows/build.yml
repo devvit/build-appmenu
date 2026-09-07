@@ -3,8 +3,8 @@ name: Build vala-panel-appmenu packages
 
 on:
   push:
-    # paths:
-      # - '**.js'
+    paths:
+      - '**.js'
   schedule:
     - cron: '0 0 1 * *'
 
@@ -15,7 +15,7 @@ jobs:
       image: archlinux:latest
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v4
+      uses: actions/checkout@v7
 
     - name: Set up build environment
       run: |
@@ -104,7 +104,7 @@ jobs:
       shell: bash
 
     - name: Upload packages as artifacts
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v7
       with:
         name: vala-panel-appmenu-packages
         path: /github/artifacts/packages.tar.gz
